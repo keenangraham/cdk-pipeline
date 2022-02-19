@@ -1,6 +1,7 @@
 import aws_cdk as cdk
 
 from cdk_pipeline.cdk_pipeline_stack import CdkPipelineStack
+from cdk_pipeline.config import config
 
 
 ENVIRONMENT = cdk.Environment(
