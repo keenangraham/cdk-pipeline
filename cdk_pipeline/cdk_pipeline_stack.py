@@ -15,7 +15,7 @@ class CdkPipelineStack(cdk.Stack):
         self.pipeline = CodePipeline(
             self,
             'Pipeline',
-            synth=pipelines.ShellStep(
+            synth=ShellStep(
                 'Synth',
                 input=CodePipelineSource.connection(
                     'keenangraham/cdk-pipeline',
