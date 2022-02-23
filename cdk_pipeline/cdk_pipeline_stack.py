@@ -4,6 +4,9 @@ from aws_cdk.pipelines import CodePipeline
 from aws_cdk.pipelines import CodePipelineSource
 from aws_cdk.pipelines import ShellStep
 
+from aws_cdk.aws_codepipeline import StagePlacement
+from aws_cdk.aws_codepipeline_actions import ManualApprovalAction
+
 
 class CdkPipelineStack(cdk.Stack):
 
@@ -27,7 +30,7 @@ class CdkPipelineStack(cdk.Stack):
                 'cdk synth',
             ]
         )
-        pipeline = CodePipeline(
+        code_pipeline = CodePipeline(
             self,
             'Pipeline',
             synth=synth
@@ -39,9 +42,31 @@ class CdkPipelineStack(cdk.Stack):
                 'ls',
             ]
         )
-        wave = pipeline.add_wave(
+        wave = code_pipeline.add_wave(
             'TestWave',
             pre=[
                 custom_step
             ]
+        )
+
+        # Can't modify high-level CodePipeline after build.
+        code_pipeline.build_pipeline()
+
+        #Low-level pipeline.
+        pipeline = code_pipeline.pipeline
+
+        custom_action = ManualApprovalAction(
+            action_name="ShouldRun",
+        )
+
+        inserted_stage = pipeline.add_stage(
+            stage_name='InsertedStage',
+            placement=StagePlacement(
+                right_before=pipeline.stage(
+                    'Build'
+                )
+            ),
+            actions=[
+                custom_action,
+            ],
         )
