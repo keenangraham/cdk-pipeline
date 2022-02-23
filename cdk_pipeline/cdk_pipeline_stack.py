@@ -32,3 +32,16 @@ class CdkPipelineStack(cdk.Stack):
             'Pipeline',
             synth=synth
         )
+        custom_step = ShellStep(
+            'EchoStep',
+            commands=[
+                'echo hello',
+                'ls',
+            ]
+        )
+        wave = pipeline.add_wave(
+            'TestWave',
+            pre=[
+                custom_step
+            ]
+        )
