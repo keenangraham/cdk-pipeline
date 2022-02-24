@@ -6,7 +6,7 @@ from aws_cdk.pipelines import ShellStep
 
 from aws_cdk.aws_codepipeline import StagePlacement
 from aws_cdk.aws_codepipeline_actions import ManualApprovalAction
-from aws_cdk.chatbot import SlackChannelConfiguration
+from aws_cdk.aws_chatbot import SlackChannelConfiguration
 
 class CdkPipelineStack(cdk.Stack):
 
