@@ -126,7 +126,7 @@ class CdkPipelineStack(cdk.Stack):
         test_stage = pipeline.add_stage(
             stage_name='RunTestStage',
             placement=StagePlacement(
-                right_after=pipeline.stage(
+                just_after=pipeline.stage(
                     'UpdatePipeline'
                 )
             ),
