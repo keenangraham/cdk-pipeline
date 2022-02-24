@@ -6,9 +6,7 @@ from aws_cdk.pipelines import ShellStep
 
 from aws_cdk.aws_codepipeline import StagePlacement
 from aws_cdk.aws_codepipeline_actions import ManualApprovalAction
-
-from cdk_pipeline.chatbot import ChatBot
-
+from aws_cdk.chatbot import SlackChannelConfiguration
 
 class CdkPipelineStack(cdk.Stack):
 
@@ -73,12 +71,14 @@ class CdkPipelineStack(cdk.Stack):
             ],
         )
 
-
-        chatbot = ChatBot(
+        target = SlackChannelConfiguration(
             self,
-            'AWSChatBot',
+            'aws-chatbot',
+            slack_channel_configuration_name='aws-chatbot',
+            slack_workspace_id='T1KMV4JJZ',
+            slack_channel_id='C034GTRCCLU',
         )
         rule = pipeline.notify_on_execution_state_change(
             'NotifySlack',
-            chatbot.target
+            target,
         )
