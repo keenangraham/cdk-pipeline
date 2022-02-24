@@ -12,16 +12,10 @@ ENVIRONMENT = cdk.Environment(
 
 app = cdk.App()
 
-notification = NotificationStack(
-    app,
-    'NotificationStack',
-    env=ENVIRONMENT,
-)
 
 pipeline = CdkPipelineStack(
     app,
     'CdkPipelineStack',
-    chatbot=notification.chatbot,
     env=ENVIRONMENT,
 )
 
