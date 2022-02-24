@@ -85,6 +85,7 @@ class CdkPipelineStack(cdk.Stack):
                     'phases': {
                         'install': {
                             'commands': [
+                                'echo hello from install',
                                 'apt-get install -y git',
                             ],
                         },
