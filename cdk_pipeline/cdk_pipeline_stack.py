@@ -91,7 +91,6 @@ class CdkPipelineStack(cdk.Stack):
                         'install': {
                             'commands': [
                                 'echo hello from install',
-                                'apt-get install -y git',
                             ],
                         },
                         'build': {
@@ -101,9 +100,8 @@ class CdkPipelineStack(cdk.Stack):
                                 'git clone https://github.com/IGVF-DACC/igvfd.git',
                                 'cd igvfd',
                                 'ls',
-                                'docker compose version',
-                                'docker compose up',
-                                'docker compose -f docker-compose.test.yml up --exit-code-from pyramid',
+                                'docker-compose version',
+                                'docker-compose -f docker-compose.test.yml up --exit-code-from pyramid',
                             ]
                         }
                     }
