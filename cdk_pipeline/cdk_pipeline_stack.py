@@ -1,11 +1,16 @@
 import aws_cdk as cdk
 
+from aws_cdk.pipelines import ArtifactMap
 from aws_cdk.pipelines import CodePipeline
 from aws_cdk.pipelines import CodePipelineSource
 from aws_cdk.pipelines import ShellStep
 
 from aws_cdk.aws_codepipeline import StagePlacement
 from aws_cdk.aws_codepipeline_actions import ManualApprovalAction
+from aws_cdk.aws_codepipeline_actions import CodeBuildAction
+
+from aws_cdk.aws_codebuild import PipelineProject
+from aws_cdk.aws_codebuild import BuildSpec
 
 
 class CdkPipelineStack(cdk.Stack):
@@ -69,6 +74,48 @@ class CdkPipelineStack(cdk.Stack):
             actions=[
                 custom_action,
             ],
+        )
+
+        unit_test_project = PipelineProject(
+            self,
+            'UnitTests',
+            build_spec=BuildSpec.from_object(
+                {
+                    'version': '0.2',
+                    'phases': {
+                        'build': {
+                            'commands': [
+                                'echo CODEBUILD!',
+                                'ls'
+                            ]
+                        }
+                    }
+                }
+            )
+        )
+
+        artifact_map = ArtifactMap()
+
+        github_artifact = artifact_map.to_code_pipeline(
+            github.primary_output
+        )
+
+        test_action = CodeBuildAction(
+            action_name='RunUnitTests',
+            project=unit_test_project,
+            input=github_artifact,
+        )
+
+        test_stage = pipeline.add_stage(
+            stage_name='RunTestStage',
+            placement=StagePlacement(
+                right_before=pipeline.stage(
+                    'InsertedStage'
+                )
+            ),
+            actions=[
+                test_action,
+            ]
         )
 
         if chatbot is not None:
