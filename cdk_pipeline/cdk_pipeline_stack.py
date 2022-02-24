@@ -11,6 +11,8 @@ from aws_cdk.aws_codepipeline_actions import CodeBuildAction
 
 from aws_cdk.aws_codebuild import PipelineProject
 from aws_cdk.aws_codebuild import BuildSpec
+from aws_cdk.aws_codebuild import BuildEnvironment
+from aws_cdk.aws_codebuild import LinuxBuildImage
 
 
 class CdkPipelineStack(cdk.Stack):
@@ -79,6 +81,9 @@ class CdkPipelineStack(cdk.Stack):
         unit_test_project = PipelineProject(
             self,
             'UnitTests',
+            environment=BuildEnvironment(
+                build_image=LinuxBuildImage.STANDARD_5_0,
+            ),
             build_spec=BuildSpec.from_object(
                 {
                     'version': '0.2',
