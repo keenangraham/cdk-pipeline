@@ -101,6 +101,8 @@ class CdkPipelineStack(cdk.Stack):
                                 'git clone https://github.com/IGVF-DACC/igvfd.git',
                                 'cd igvfd',
                                 'ls',
+                                'docker compose version',
+                                'docker compose up',
                                 'docker compose -f docker-compose.test.yml up --exit-code-from pyramid',
                             ]
                         }
