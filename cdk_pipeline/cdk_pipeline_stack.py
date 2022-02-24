@@ -71,6 +71,7 @@ class CdkPipelineStack(cdk.Stack):
             ],
         )
 
+        # Notify Slack with pipeline stages.
         target = SlackChannelConfiguration(
             self,
             'aws-chatbot',
