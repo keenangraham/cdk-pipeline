@@ -83,6 +83,7 @@ class CdkPipelineStack(cdk.Stack):
             'UnitTests',
             environment=BuildEnvironment(
                 build_image=LinuxBuildImage.STANDARD_5_0,
+                privileged=True,
             ),
             build_spec=BuildSpec.from_object(
                 {
@@ -101,6 +102,7 @@ class CdkPipelineStack(cdk.Stack):
                                 'cd igvfd',
                                 'ls',
                                 'docker-compose version',
+                                'cat docker-compose.test.yml',
                                 'docker-compose -f docker-compose.test.yml up --exit-code-from pyramid',
                             ]
                         }
