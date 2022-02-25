@@ -8,11 +8,16 @@ from aws_cdk.pipelines import ShellStep
 from aws_cdk.aws_codepipeline import StagePlacement
 from aws_cdk.aws_codepipeline_actions import ManualApprovalAction
 from aws_cdk.aws_codepipeline_actions import CodeBuildAction
+from aws_cdk.aws_codepipeline_actions import LambdaInvokeAction
 
 from aws_cdk.aws_codebuild import PipelineProject
 from aws_cdk.aws_codebuild import BuildSpec
 from aws_cdk.aws_codebuild import BuildEnvironment
 from aws_cdk.aws_codebuild import LinuxBuildImage
+
+from aws_cdk.aws_lambda import Code
+from aws_cdk.aws_lambda import Function
+from aws_cdk.aws_lambda import Runtime
 
 
 class CdkPipelineStack(cdk.Stack):
@@ -111,6 +116,30 @@ class CdkPipelineStack(cdk.Stack):
             )
         )
 
+        random_lambda = Function(
+            self, 'RandomLambda',
+            runtime=Runtime.NODEJS_14_X,
+            handler='index.handler',
+            code=Code.from_inline(
+                (
+                    "exports.handler = function (event, context) {"
+                        "console.log('HELLO');"
+                        "console.log(event);"
+                        "var AWS = require('aws-sdk');"
+                        "var codepipeline = new AWS.CodePipeline();"
+                        "var jobId = event['CodePipeline.job'].id;"
+                        "codepipeline.putJobSuccessResult({ jobId });"
+                        "context.succeed('DONE!');"
+                    "}"
+                )
+            )
+        )
+
+        lambda_action = LambdaInvokeAction(
+            action_name='RunRandomLambda',
+            lambda_=random_lambda,
+        )
+
         artifact_map = ArtifactMap()
 
         github_artifact = artifact_map.to_code_pipeline(
@@ -132,6 +161,7 @@ class CdkPipelineStack(cdk.Stack):
             ),
             actions=[
                 test_action,
+                lambda_action,
             ]
         )
 
