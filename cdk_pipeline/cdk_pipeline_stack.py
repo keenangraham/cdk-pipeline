@@ -6,6 +6,7 @@ from aws_cdk.pipelines import CodePipelineSource
 from aws_cdk.pipelines import ShellStep
 
 from aws_cdk.aws_codepipeline import StagePlacement
+
 from aws_cdk.aws_codepipeline_actions import ManualApprovalAction
 from aws_cdk.aws_codepipeline_actions import CodeBuildAction
 from aws_cdk.aws_codepipeline_actions import LambdaInvokeAction
