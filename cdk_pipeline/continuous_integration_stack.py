@@ -1,13 +1,13 @@
 import aws_cdk as cdk
 
-from aws_cdk.aws_codebuild import Project
+from aws_cdk.aws_codebuild import BuildEnvironmentVariable
 from aws_cdk.aws_codebuild import BuildSpec
 from aws_cdk.aws_codebuild import BuildEnvironment
+from aws_cdk.aws_codebuild import EventAction
+from aws_cdk.aws_codebuild import FilterGroup
 from aws_cdk.aws_codebuild import LinuxBuildImage
 from aws_cdk.aws_codebuild import Source
-from aws_cdk.aws_codebuild import FilterGroup
-from aws_cdk.aws_codebuild import EventAction
-from aws_cdk.aws_codebuild import BuildEnvironmentVariable
+from aws_cdk.aws_codebuild import Project
 
 
 class ContinuousIntegrationStack(cdk.Stack):
