@@ -22,7 +22,7 @@ from aws_cdk.aws_lambda import Runtime
 from cdk_pipeline.continuous_integration_stack import ContinuousIntegrationStack
 
 
-class ContinuousIntegrationStage(cd.Stage):
+class ContinuousIntegrationStage(cdk.Stage):
 
     def __init__(self, scope, construct_id, **kwargs):
         super().__init__(scope, construct_id,  **kwargs)

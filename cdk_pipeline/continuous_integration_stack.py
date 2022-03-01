@@ -7,6 +7,7 @@ from aws_cdk.aws_codebuild import LinuxBuildImage
 from aws_cdk.aws_codebuild import Source
 from aws_cdk.aws_codebuild import FilterGroup
 from aws_cdk.aws_codebuild import EventAction
+from aws_cdk.aws_codebuild import BuildEnvironmentVariable
 
 
 class ContinuousIntegrationStack(cdk.Stack):
@@ -42,7 +43,9 @@ class ContinuousIntegrationStack(cdk.Stack):
                 }
             ),
             environment_variables={
-                'TEST': 'VALUE',
+                'TEST': BuildEnvironmentVariable(
+                    value='SOMETHING!'
+                )
             },
             badge=True,
         )
