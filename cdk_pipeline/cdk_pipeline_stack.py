@@ -19,6 +19,18 @@ from aws_cdk.aws_lambda import Code
 from aws_cdk.aws_lambda import Function
 from aws_cdk.aws_lambda import Runtime
 
+from cdk_pipeline.continuous_integration_stack import ContinuousIntegrationStack
+
+
+class ContinuousIntegrationStage(cd.Stage):
+
+    def __init__(self, scope, construct_id, **kwargs):
+        super().__init__(scope, construct_id,  **kwargs)
+        ContinuousIntegrationStack(
+            self,
+            'CIStack'
+        )
+
 
 class CdkPipelineStack(cdk.Stack):
 
@@ -46,6 +58,13 @@ class CdkPipelineStack(cdk.Stack):
             self,
             'Pipeline',
             synth=synth
+        )
+        ci_stage = ContinuousIntegrationStage(
+            self,
+            'ContinuousIntegrationStage'
+        )
+        code_pipeline.add_stage(
+            ci_stage
         )
         custom_step = ShellStep(
             'EchoStep',
@@ -75,7 +94,7 @@ class CdkPipelineStack(cdk.Stack):
             stage_name='InsertedStage',
             placement=StagePlacement(
                 right_before=pipeline.stage(
-                    'Build'
+                    'TestWave'
                 )
             ),
             actions=[
@@ -156,7 +175,7 @@ class CdkPipelineStack(cdk.Stack):
             stage_name='RunTestStage',
             placement=StagePlacement(
                 just_after=pipeline.stage(
-                    'UpdatePipeline'
+                    'TestWave'
                 )
             ),
             actions=[
