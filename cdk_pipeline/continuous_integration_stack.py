@@ -33,6 +33,17 @@ class ContinuousIntegrationStack(cdk.Stack):
                 {
                     'version': '0.2',
                     'phases': {
+                        'install': {
+                            'commands': [
+                                'echo $CODEBUILD_RESOLVED_SOURCE_VERSION',
+                                'echo $CODEBUILD_SOURCE_REPO_URL',
+                                'echo $CODEBUILD_SOURCE_VERSION',
+                                'echo $CODEBUILD_WEBHOOK_EVENT',
+                                'echo $CODEBUILD_WEBHOOK_HEAD_REF',
+                                'echo $CODEBUILD_WEBHOOK_TRIGGER',
+                                'git branch --show-current',
+                            ]
+                        },
                         'build': {
                             'commands': [
                                 'echo CI',
