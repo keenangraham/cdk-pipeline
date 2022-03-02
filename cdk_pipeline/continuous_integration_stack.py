@@ -42,6 +42,8 @@ class ContinuousIntegrationStack(cdk.Stack):
                                 'echo $CODEBUILD_WEBHOOK_HEAD_REF',
                                 'echo $CODEBUILD_WEBHOOK_TRIGGER',
                                 'echo $(git branch --show-current)',
+                                'echo $(git log -1 --pretty=%H)',
+                                'echo $(git log -1 --pretty=%h)',
                             ]
                         },
                         'build': {
