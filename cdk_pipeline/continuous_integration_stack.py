@@ -22,8 +22,8 @@ class ContinuousIntegrationStack(cdk.Stack):
             webhook=True,
         )
 
-        report_group = ReportGroup(
-            self, 'PytestReportGroup'
+        unit_test_report_group = ReportGroup(
+            self, 'PytestUnitTestReportGroup'
         )
 
         continuous_integration_project = Project(
@@ -48,7 +48,7 @@ class ContinuousIntegrationStack(cdk.Stack):
                                 'echo $CODEBUILD_WEBHOOK_EVENT',
                                 'echo $CODEBUILD_WEBHOOK_TRIGGER',
                                 'echo $(git log -1 --pretty="%s (%h) - %an")',
-                                'pip3 install pytest',
+                                'pip3 install -r requirements-dev.txt',
                             ]
                         },
                         'build': {
@@ -56,15 +56,15 @@ class ContinuousIntegrationStack(cdk.Stack):
                                 'ls',
                                 'echo CI',
                                 'echo $TEST',
-                                'python -m pytest --junitxml=test_reports/pytest_report.xml',
+                                'python -m pytest --junitxml=pytest_report.xml',
                             ]
                         }
                     },
                     'reports': {
-                        report_group.report_group_arn: {
-                            'files': '**/*',
-                            'base_directory': 'test_reports',
-                        },
+                        unit_test_report_group.report_group_arn: {
+                            'files': 'pytest_report.xml',
+                            'file_format': 'JUNITXML',
+                        }
                     },
                 }
             ),
