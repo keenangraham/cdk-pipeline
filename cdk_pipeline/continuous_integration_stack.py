@@ -48,7 +48,7 @@ class ContinuousIntegrationStack(cdk.Stack):
                                 'echo $CODEBUILD_WEBHOOK_EVENT',
                                 'echo $CODEBUILD_WEBHOOK_TRIGGER',
                                 'echo $(git log -1 --pretty="%s (%h) - %an")',
-                                'pip3 install -r requirements-dev.txt',
+                                'pip3 install -r requirements.txt -r requirements-dev.txt',
                             ]
                         },
                         'build': {
