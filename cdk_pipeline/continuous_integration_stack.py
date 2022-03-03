@@ -37,9 +37,7 @@ class ContinuousIntegrationStack(cdk.Stack):
                             'commands': [
                                 'echo $CODEBUILD_RESOLVED_SOURCE_VERSION',
                                 'echo $CODEBUILD_SOURCE_REPO_URL',
-                                'echo $CODEBUILD_SOURCE_VERSION',
                                 'echo $CODEBUILD_WEBHOOK_EVENT',
-                                'echo $CODEBUILD_WEBHOOK_HEAD_REF',
                                 'echo $CODEBUILD_WEBHOOK_TRIGGER',
                                 'echo $(git log -1 --pretty="%s (%h) - %an")',
                             ]
