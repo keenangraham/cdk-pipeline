@@ -71,3 +71,5 @@ class ContinuousIntegrationStack(cdk.Stack):
             },
             badge=True,
         )
+        cfn_project = continuous_integration_project.node.default_child
+        cfn_project.visibility = 'PUBLIC_READ'
