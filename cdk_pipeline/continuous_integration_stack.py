@@ -7,6 +7,7 @@ from aws_cdk.aws_codebuild import EventAction
 from aws_cdk.aws_codebuild import FilterGroup
 from aws_cdk.aws_codebuild import LinuxBuildImage
 from aws_cdk.aws_codebuild import Project
+from aws_cdk.aws_codebuild import ReportGroup
 from aws_cdk.aws_codebuild import Source
 
 
@@ -19,6 +20,10 @@ class ContinuousIntegrationStack(cdk.Stack):
             owner='keenangraham',
             repo='cdk-pipeline',
             webhook=True,
+        )
+
+        report_group = ReportGroup(
+            self, 'PytestReportGroup'
         )
 
         continuous_integration_project = Project(
@@ -34,12 +39,16 @@ class ContinuousIntegrationStack(cdk.Stack):
                     'version': '0.2',
                     'phases': {
                         'install': {
+                            'runtime-versions': {
+                                'python': '3.9',
+                            },
                             'commands': [
                                 'echo $CODEBUILD_RESOLVED_SOURCE_VERSION',
                                 'echo $CODEBUILD_SOURCE_REPO_URL',
                                 'echo $CODEBUILD_WEBHOOK_EVENT',
                                 'echo $CODEBUILD_WEBHOOK_TRIGGER',
                                 'echo $(git log -1 --pretty="%s (%h) - %an")',
+                                'pip3 install pytest',
                             ]
                         },
                         'build': {
@@ -47,9 +56,16 @@ class ContinuousIntegrationStack(cdk.Stack):
                                 'ls',
                                 'echo CI',
                                 'echo $TEST',
+                                'python -m pytest --junitxml=test_reports/pytest_report.xml',
                             ]
                         }
-                    }
+                    },
+                    'reports': {
+                        report_group.report_group_arn: {
+                            'files': '**/*',
+                            'base_directory': 'test_reports',
+                        },
+                    },
                 }
             ),
             environment_variables={
