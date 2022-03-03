@@ -21,6 +21,7 @@ from aws_cdk.aws_lambda import Function
 from aws_cdk.aws_lambda import Runtime
 
 from cdk_pipeline.continuous_integration_stack import ContinuousIntegrationStack
+from cdk_pipeline.naming import prepend_org_and_project_name
 
 
 class ContinuousIntegrationStage(cdk.Stage):
@@ -29,7 +30,9 @@ class ContinuousIntegrationStage(cdk.Stage):
         super().__init__(scope, construct_id,  **kwargs)
         ContinuousIntegrationStack(
             self,
-            'CIStack'
+            prepend_org_and_project_name(
+                'CIStack'
+            )
         )
 
 
