@@ -22,10 +22,6 @@ class ContinuousIntegrationStack(cdk.Stack):
             webhook=True,
         )
 
-        unit_test_report_group = ReportGroup(
-            self, 'PytestUnitTestReportGroup'
-        )
-
         continuous_integration_project = Project(
             self,
             'ContinuousIntegrationProject',
@@ -61,7 +57,7 @@ class ContinuousIntegrationStack(cdk.Stack):
                         }
                     },
                     'reports': {
-                        unit_test_report_group.report_group_arn: {
+                        'unit_tests': {
                             'files': 'pytest_report.xml',
                             'file_format': 'JUNITXML',
                         }
