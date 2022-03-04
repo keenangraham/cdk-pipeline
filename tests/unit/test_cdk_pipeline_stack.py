@@ -7,9 +7,12 @@ from cdk_pipeline.cdk_pipeline_stack import CdkPipelineStack
 # resource in cdk_pipeline/cdk_pipeline_stack.py
 def test_sqs_queue_created():
     app = core.App()
-    stack = CdkPipelineStack(app, "cdk-pipeline")
+    stack = CdkPipelineStack(
+        app,
+        'cdk-pipeline',
+        branch='_test'
+    )
     template = assertions.Template.from_stack(stack)
-
 #     template.has_resource_properties("AWS::SQS::Queue", {
 #         "VisibilityTimeout": 300
 #     })

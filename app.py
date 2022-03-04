@@ -22,12 +22,15 @@ notification = NotificationStack(
     env=ENVIRONMENT,
 )
 
+branch = app.node.try_get_context('branch') or config.get('default_branch')
+
 pipeline = CdkPipelineStack(
     app,
     prepend_project_name(
         'CdkPipelineStack'
     ),
     chatbot=notification.chatbot,
+    branch=branch,
     env=ENVIRONMENT,
 )
 

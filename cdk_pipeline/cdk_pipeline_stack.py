@@ -22,7 +22,7 @@ from aws_cdk.aws_lambda import Runtime
 
 from cdk_pipeline.continuous_integration_stack import ContinuousIntegrationStack
 
-from cdk_pipeline.naming import prepend_branch_context
+from cdk_pipeline.naming import prepend_branch_name
 from cdk_pipeline.naming import prepend_project_name
 
 
@@ -40,7 +40,7 @@ class ContinuousIntegrationStage(cdk.Stage):
 
 class CdkPipelineStack(cdk.Stack):
 
-    def __init__(self, scope, construct_id, chatbot=None, **kwargs):
+    def __init__(self, scope, construct_id, chatbot=None, branch=None, **kwargs):
         super().__init__(scope, construct_id,  **kwargs)
         github = CodePipelineSource.connection(
             'keenangraham/cdk-pipeline',
@@ -55,7 +55,7 @@ class CdkPipelineStack(cdk.Stack):
             'Synth',
             input=github,
             env={
-                'BRANCH': self.node.try_get_context('branch'),
+                'BRANCH': branch
             },
             commands=[
                 'npm install -g aws-cdk',
@@ -65,9 +65,9 @@ class CdkPipelineStack(cdk.Stack):
         )
         code_pipeline = CodePipeline(
             self,
-            prepend_branch_context(
-                self,
-                'CodePipeline'
+            prepend_branch_name(
+                branch,
+                'CodePipeline',
             ),
             synth=synth
         )
