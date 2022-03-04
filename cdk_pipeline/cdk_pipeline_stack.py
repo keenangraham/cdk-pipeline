@@ -21,7 +21,9 @@ from aws_cdk.aws_lambda import Function
 from aws_cdk.aws_lambda import Runtime
 
 from cdk_pipeline.continuous_integration_stack import ContinuousIntegrationStack
-from cdk_pipeline.naming import prepend_org_and_project_name
+
+from cdk_pipeline.naming import prepend_branch_context
+from cdk_pipeline.naming import prepend_project_name
 
 
 class ContinuousIntegrationStage(cdk.Stage):
@@ -30,7 +32,7 @@ class ContinuousIntegrationStage(cdk.Stage):
         super().__init__(scope, construct_id,  **kwargs)
         ContinuousIntegrationStack(
             self,
-            prepend_org_and_project_name(
+            prepend_project_name(
                 'CIStack'
             )
         )
@@ -52,15 +54,21 @@ class CdkPipelineStack(cdk.Stack):
         synth = ShellStep(
             'Synth',
             input=github,
+            env={
+                'BRANCH': self.node.try_get_context('branch'),
+            },
             commands=[
                 'npm install -g aws-cdk',
                 'python -m pip install -r requirements.txt',
-                'cdk synth',
+                'cdk synth -c branch=$BRANCH',
             ]
         )
         code_pipeline = CodePipeline(
             self,
-            'Pipeline',
+            prepend_branch_context(
+                self,
+                'CodePipeline'
+            ),
             synth=synth
         )
         ci_stage = ContinuousIntegrationStage(

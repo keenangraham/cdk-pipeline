@@ -10,7 +10,7 @@ from aws_cdk.aws_codebuild import Project
 from aws_cdk.aws_codebuild import ReportGroup
 from aws_cdk.aws_codebuild import Source
 
-from cdk_pipeline.naming import prepend_org_and_project_name
+from cdk_pipeline.naming import prepend_project_name
 
 
 class ContinuousIntegrationStack(cdk.Stack):
@@ -26,7 +26,7 @@ class ContinuousIntegrationStack(cdk.Stack):
 
         continuous_integration_project = Project(
             self,
-            prepend_org_and_project_name(
+            prepend_project_name(
                 'ContinuousIntegrationProject'
             ),
             source=github,

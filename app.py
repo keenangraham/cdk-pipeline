@@ -4,7 +4,7 @@ from cdk_pipeline.cdk_pipeline_stack import CdkPipelineStack
 from cdk_pipeline.notification_stack import NotificationStack
 
 from cdk_pipeline.config import config
-from cdk_pipeline.naming import prepend_org_and_project_name
+from cdk_pipeline.naming import prepend_project_name
 
 
 ENVIRONMENT = cdk.Environment(
@@ -16,7 +16,7 @@ app = cdk.App()
 
 notification = NotificationStack(
     app,
-    prepend_org_and_project_name(
+    prepend_project_name(
         'NotificationStack'
     ),
     env=ENVIRONMENT,
@@ -24,7 +24,7 @@ notification = NotificationStack(
 
 pipeline = CdkPipelineStack(
     app,
-    prepend_org_and_project_name(
+    prepend_project_name(
         'CdkPipelineStack'
     ),
     chatbot=notification.chatbot,
