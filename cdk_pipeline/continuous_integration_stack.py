@@ -32,14 +32,14 @@ class ContinuousIntegrationStack(cdk.Stack):
             repo='cdk-pipeline',
             webhook=True,
         )
-        report_bucket = Bucket(
+        artifact_bucket = Bucket(
             self,
             'ReportBucket',
             removal_policy=cdk.RemovalPolicy.DESTROY,
             auto_delete_objects=True,
         )
         report_artifacts = Artifacts.s3(
-            bucket=report_bucket,
+            bucket=artifact_bucket,
         )
         continuous_integration_project = Project(
             self,
@@ -114,7 +114,7 @@ class ContinuousIntegrationStack(cdk.Stack):
             resource_name=f'/aws/codebuild/{project_name}',
         )
         log_group_star_arn = f'{log_group_arn}:*'
-        public_read_policy = PolicyStatement(
+        public_log_read_policy = PolicyStatement(
             resources=[
                 log_group_star_arn,
             ],
@@ -123,7 +123,20 @@ class ContinuousIntegrationStack(cdk.Stack):
             ],
         )
         resource_access_role.add_to_principal_policy(
-            public_read_policy
+            public_log_read_policy
+        )
+        artifact_bucket_star_arn = f'{artifact_bucket.bucket_arn}/*'
+        public_artifact_read_policy = PolicyStatement(
+            resources=[
+                artifact_bucket_star_arn,
+            ],
+            actions=[
+                's3:GetObject',
+                's3:GetObjectVersion',
+            ],
+        )
+        resource_access_role.add_to_principal_policy(
+            public_artifact_read_policy
         )
         cfn_project = continuous_integration_project.node.default_child
         cfn_project.visibility = 'PUBLIC_READ'
