@@ -4,9 +4,11 @@ from aws_cdk.aws_codebuild import Artifacts
 from aws_cdk.aws_codebuild import BuildEnvironmentVariable
 from aws_cdk.aws_codebuild import BuildSpec
 from aws_cdk.aws_codebuild import BuildEnvironment
+from aws_cdk.aws_codebuild import Cache
 from aws_cdk.aws_codebuild import EventAction
 from aws_cdk.aws_codebuild import FilterGroup
 from aws_cdk.aws_codebuild import LinuxBuildImage
+from aws_cdk.aws_codebuild import LocalCacheMode
 from aws_cdk.aws_codebuild import Project
 from aws_cdk.aws_codebuild import ReportGroup
 from aws_cdk.aws_codebuild import Source
@@ -93,6 +95,9 @@ class ContinuousIntegrationStack(cdk.Stack):
             },
             badge=True,
             artifacts=report_artifacts,
+            cache=Cache.local(
+                LocalCacheMode.DOCKER_LAYER
+            ),
         )
         resource_access_role = Role(
             self,
