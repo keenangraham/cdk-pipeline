@@ -1,5 +1,6 @@
 import aws_cdk as cdk
 
+from aws_cdk.aws_codebuild import Artifacts
 from aws_cdk.aws_codebuild import BuildEnvironmentVariable
 from aws_cdk.aws_codebuild import BuildSpec
 from aws_cdk.aws_codebuild import BuildEnvironment
@@ -14,6 +15,8 @@ from aws_cdk.aws_iam import PolicyStatement
 from aws_cdk.aws_iam import Role
 from aws_cdk.aws_iam import ServicePrincipal
 
+from aws_cdk.aws_s3 import Bucket
+
 from cdk_pipeline.naming import prepend_project_name
 
 
@@ -27,7 +30,15 @@ class ContinuousIntegrationStack(cdk.Stack):
             repo='cdk-pipeline',
             webhook=True,
         )
-
+        report_bucket = Bucket(
+            self,
+            'ReportBucket',
+            removal_policy=cdk.RemovalPolicy.DESTROY,
+            auto_delete_objects=True,
+        )
+        report_artifacts = Artifacts.s3(
+            bucket=report_bucket,
+        )
         continuous_integration_project = Project(
             self,
             prepend_project_name(
@@ -60,7 +71,7 @@ class ContinuousIntegrationStack(cdk.Stack):
                                 'ls',
                                 'echo CI',
                                 'echo $TEST',
-                                'python -m pytest --junitxml=pytest_report.xml',
+                                'python -m pytest --junitxml=pytest_report.xml --cov cdk_pipeline --cov-report html --cov-report term',
                             ]
                         }
                     },
@@ -70,6 +81,10 @@ class ContinuousIntegrationStack(cdk.Stack):
                             'file_format': 'JUNITXML',
                         }
                     },
+                    'artifacts': {
+                        'files': '**/*',
+                        'base-directory': 'htmlcov/'
+                    }
                 }
             ),
             environment_variables={
@@ -78,8 +93,8 @@ class ContinuousIntegrationStack(cdk.Stack):
                 )
             },
             badge=True,
+            artifacts=report_artifacts,
         )
-
         resource_access_role = Role(
             self,
             'ResourceAccessRole',
