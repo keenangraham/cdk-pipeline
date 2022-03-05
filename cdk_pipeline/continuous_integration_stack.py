@@ -82,8 +82,7 @@ class ContinuousIntegrationStack(cdk.Stack):
                         }
                     },
                     'artifacts': {
-                        'files': '**/*',
-                        'base-directory': 'htmlcov/'
+                        'files': 'htmlcov/**/*',
                     }
                 }
             ),
